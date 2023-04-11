@@ -50,3 +50,27 @@ class CreateURL {
         return url
     }
 }
+
+class ProcessUrl {
+    
+    // data from string
+    func getDataString(urlRequest: String) {
+        let urlRequests = URL(string: urlRequest)
+        
+        guard let url = urlRequests else {
+            print("error URL")
+            return
+        }
+        let session = URLSession(configuration: .default)
+        session.dataTask(with: url) { data, responce, error in
+            if let error {
+                print("Error - \(error)")
+            } else if let responce = responce as? HTTPURLResponse, responce.statusCode == 200 {
+                print("Server response code - \(responce.statusCode)\n")
+                guard let data = data else { return }
+                let dataAsString = String(data: data, encoding: .utf8)
+                print("Data received from the server: \n\(dataAsString ?? "Nothing")")
+            }
+        }.resume()
+    }
+}
